@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destination Details | Horizon Explorers</title>
+    <meta name="description" content="Learn more about your selected destination.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script type="module" src="js/api.js"></script>
+    <script type="module" src="js/storage.js"></script>
+    <script type="module" src="js/destination.js"></script>
+
+</head>
+
+<body>
+
+    <!-- ===========================
+         HEADER
+    ============================ -->
+
+    <header class="header">
+
+        <div class="container">
+
+            <a href="index.html" class="logo">
+
+                <img
+                    src="images/travel-svgrepo-com.svg"
+                    alt="Horizon Explorers Logo"
+                    class="logo-img">
+
+                <span>Horizon Explorers</span>
+
+            </a>
+
+            <nav class="navbar">
+
+                <ul class="nav-links">
+
+                    <li>
+                        <a href="index.html">
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="favorites.html">
+                            Favorites
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="planner.html">
+                            Trip Planner
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="wishlist.html">
+                            Wishlist
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="about.html">
+                            About
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav>
+
+            <button id="menuButton"
+                    class="menu-button">
+
+                ☰
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ===========================
+         PAGE TITLE
+    ============================ -->
+
+    <section class="search-section">
+
+        <div class="container">
+
+            <h1>
+
+                Destination Details
+
+            </h1>
+
+            <p>
+
+                Explore useful information about this destination.
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===========================
+         DESTINATION DETAILS
+    ============================ -->
+
+    <section class="destination-details">
+
+        <div class="container">
+
+            <div id="destinationContainer">
+
+                <!-- JavaScript loads content here -->
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===========================
+         ACTION BUTTONS
+    ============================ -->
+
+    <section class="destination-actions">
+
+        <div class="container">
+
+            <button
+                id="favoriteButton"
+                class="hero-button">
+
+                ❤️ Add to Favorites
+
+            </button>
+
+            <button
+                id="plannerButton"
+                class="hero-button">
+
+                🧳 Add to Trip Planner
+
+            </button>
+
+            <a
+                href="wishlist.html"
+                class="hero-button">
+
+                ⭐ Add to Wishlist
+
+            </a>
+
+            <a
+                href="index.html"
+                class="hero-button">
+
+                ← Back Home
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===========================
+         MAP
+    ============================ -->
+
+    <section class="map-section">
+
+        <div class="container">
+
+            <h2 class="section-title">
+
+                Location
+
+            </h2>
+
+            <iframe
+
+                id="countryMap"
+
+                width="100%"
+
+                height="450"
+
+                loading="lazy"
+
+                style="border:0"
+
+                allowfullscreen>
+
+            </iframe>
+
+        </div>
+
+    </section>
+
+    <footer class="footer">
+
+        <div class="container footer-content">
+
+            <div>
+
+                <h3>
+
+                    Horizon Explorers
+
+                </h3>
+
+                <p>
+
+                    Discover amazing destinations around the world.
+
+                </p>
+
+            </div>
+
+            <div>
+
+                <h4>
+
+                    Navigation
+
+                </h4>
+
+                <ul>
+
+                    <li><a href="index.html">Home</a></li>
+
+                    <li><a href="favorites.html">Favorites</a></li>
+
+                    <li><a href="planner.html">Trip Planner</a></li>
+
+                    <li><a href="wishlist.html">Wishlist</a></li>
+
+                    <li><a href="about.html">About</a></li>
+
+                </ul>
+
+            </div>
+
+            <div>
+
+                <h4>
+
+                    Contact
+
+                </h4>
+
+                <p>
+
+                    info@horizonexplorers.com
+
+                </p>
+
+                <p>
+
+                    Travel Anywhere, Anytime
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <p>
+
+                © 2026 Horizon Explorers | WDD330 Final Project
+
+            </p>
+
+        </div>
+
+    </footer>
+
+    <button
+        id="backToTop"
+        class="back-to-top"
+        title="Back to Top">
+
+        ↑
+
+    </button>
+
+</body>
+
+</html>

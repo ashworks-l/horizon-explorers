@@ -1,22 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wishlist | Horizon Explorers</title>
-    <meta name="description" content="Manage your travel wishlist.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <script type="module" src="js/storage.js"></script>
-    <script type="module" src="js/wishlist.js"></script>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Trip Planner | Horizon Explorers</title>
+
+    <meta name="description"
+          content="Plan and organize your next trips.">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="css/styles.css">
+
+    <link rel="stylesheet"
+          href="css/responsive.css">
+
 </head>
 
 <body>
 
-    <!-- HEADER -->
+    <!-- ===========================
+         HEADER
+    ============================ -->
 
     <header class="header">
 
@@ -50,13 +69,13 @@
                     </li>
 
                     <li>
-                        <a href="planner.html">
+                        <a href="planner.html" class="active">
                             Trip Planner
                         </a>
                     </li>
 
                     <li>
-                        <a href="wishlist.html" class="active">
+                        <a href="wishlist.html">
                             Wishlist
                         </a>
                     </li>
@@ -83,7 +102,9 @@
 
     </header>
 
-    <!-- TITLE -->
+    <!-- ===========================
+         PAGE TITLE
+    ============================ -->
 
     <section class="search-section">
 
@@ -91,13 +112,13 @@
 
             <h1>
 
-                Travel Wishlist
+                Trip Planner
 
             </h1>
 
             <p>
 
-                Save the destinations you dream of visiting.
+                Organize your future adventures and keep track of your travel plans.
 
             </p>
 
@@ -105,17 +126,68 @@
 
     </section>
 
-    <!-- WISHLIST -->
+    <!-- ===========================
+         ADD TRIP FORM
+    ============================ -->
+
+    <section class="planner-form">
+
+        <div class="container">
+
+            <form id="tripForm">
+
+                <input
+                    type="text"
+                    id="country"
+                    placeholder="Country"
+                    required>
+
+                <input
+                    type="date"
+                    id="tripDate"
+                    required>
+
+                <select id="tripStatus">
+
+                    <option value="Planned">
+                        Planned
+                    </option>
+
+                    <option value="Booked">
+                        Booked
+                    </option>
+
+                    <option value="Completed">
+                        Completed
+                    </option>
+
+                </select>
+
+                <button type="submit">
+
+                    Save Trip
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- ===========================
+         TRIP LIST
+    ============================ -->
 
     <section class="destinations">
 
         <div class="container">
 
             <div
-                id="wishlistContainer"
+                id="plannerContainer"
                 class="destination-grid">
 
-                <!-- JavaScript inserts wishlist cards here -->
+                <!-- JavaScript renders trips here -->
 
             </div>
 
@@ -123,23 +195,25 @@
 
     </section>
 
-    <!-- EMPTY MESSAGE -->
+    <!-- ===========================
+         EMPTY STATE
+    ============================ -->
 
     <section
-        id="wishlistEmpty"
+        id="plannerEmpty"
         class="hidden">
 
         <div class="container text-center">
 
             <h2>
 
-                Your Wishlist is Empty ⭐
+                No Trips Planned Yet
 
             </h2>
 
             <p>
 
-                Start exploring countries and add your dream destinations.
+                Start planning your next adventure by adding a destination above.
 
             </p>
 
@@ -149,7 +223,7 @@
                 href="index.html"
                 class="hero-button">
 
-                Explore Countries
+                Explore Destinations
 
             </a>
 
@@ -157,7 +231,9 @@
 
     </section>
 
-    <!-- FOOTER -->
+    <!-- ===========================
+         FOOTER
+    ============================ -->
 
     <footer class="footer">
 
@@ -191,9 +267,13 @@
                 <ul>
 
                     <li><a href="index.html">Home</a></li>
+
                     <li><a href="favorites.html">Favorites</a></li>
+
                     <li><a href="planner.html">Trip Planner</a></li>
+
                     <li><a href="wishlist.html">Wishlist</a></li>
+
                     <li><a href="about.html">About</a></li>
 
                 </ul>
@@ -236,7 +316,9 @@
 
     </footer>
 
-    <!-- BACK TO TOP -->
+    <!-- ===========================
+         BACK TO TOP
+    ============================ -->
 
     <button
         id="backToTop"
@@ -246,6 +328,16 @@
         ↑
 
     </button>
+
+    <!-- ===========================
+         JAVASCRIPT
+    ============================ -->
+
+    <script type="module"
+            src="js/storage.js"></script>
+
+    <script type="module"
+            src="js/planner.js"></script>
 
 </body>
 

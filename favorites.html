@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites | Horizon Explorers</title>
+    <meta name="description" content="View and manage your favorite travel destinations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script type="module" src="js/ui.js"></script>
+    <script type="module" src="js/storage.js"></script>
+    <script type="module" src="js/favorites.js"></script>
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="container">
+
+            <a href="index.html" class="logo">
+
+                <img
+                    src="images/travel-svgrepo-com.svg"
+                    alt="Horizon Explorers Logo"
+                    class="logo-img">
+
+                <span>Horizon Explorers</span>
+
+            </a>
+
+            <nav class="navbar">
+
+                <ul class="nav-links">
+
+                    <li>
+                        <a href="index.html">
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="favorites.html" class="active">
+                            Favorites
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="planner.html">
+                            Trip Planner
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="wishlist.html">
+                            Wishlist
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="about.html">
+                            About
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav>
+
+            <button
+                id="menuButton"
+                class="menu-button">
+
+                ☰
+
+            </button>
+
+        </div>
+
+    </header>
+
+    <section class="search-section">
+
+        <div class="container">
+
+            <h1>
+
+                My Favorite Destinations
+
+            </h1>
+
+            <p>
+
+                Keep all your dream destinations in one place.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="destinations">
+
+        <div class="container">
+
+            <div
+                id="favoritesContainer"
+                class="destination-grid">
+
+                <!-- JavaScript renders favorites here -->
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section
+        id="emptyMessage"
+        class="text-center hidden">
+
+        <div class="container">
+
+            <h2>
+
+                No Favorites Yet ❤️
+
+            </h2>
+
+            <p>
+
+                Browse destinations and save your favorites.
+
+            </p>
+
+            <br>
+
+            <a
+                href="index.html"
+                class="hero-button">
+
+                Explore Countries
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <footer class="footer">
+
+        <div class="container footer-content">
+
+            <div>
+
+                <h3>
+
+                    Horizon Explorers
+
+                </h3>
+
+                <p>
+
+                    Your travel companion for discovering countries,
+                    planning adventures and saving dream destinations.
+
+                </p>
+
+            </div>
+
+            <div>
+
+                <h4>
+
+                    Quick Links
+
+                </h4>
+
+                <ul>
+
+                    <li><a href="index.html">Home</a></li>
+
+                    <li><a href="favorites.html">Favorites</a></li>
+
+                    <li><a href="planner.html">Trip Planner</a></li>
+
+                    <li><a href="wishlist.html">Wishlist</a></li>
+
+                    <li><a href="about.html">About</a></li>
+
+                </ul>
+
+            </div>
+
+            <div>
+
+                <h4>
+
+                    Contact
+
+                </h4>
+
+                <p>
+
+                    info@horizonexplorers.com
+
+                </p>
+
+                <p>
+
+                    Travel Anywhere, Anytime
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <p>
+
+                © 2026 Horizon Explorers | WDD330 Final Project
+
+            </p>
+
+        </div>
+
+    </footer>
+
+    <button
+        id="backToTop"
+        class="back-to-top"
+        title="Back to Top">
+
+        ↑
+
+    </button>
+
+</body>
+
+</html>
