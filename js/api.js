@@ -5,19 +5,15 @@ const BASE_URL = "https://restcountries.com/v3.1";
 =========================== */
 
 export async function searchCountry(country) {
-
     const response = await fetch(
-        `${BASE_URL}/name/${country}`
+        `${BASE_URL}/name/${encodeURIComponent(country)}?fields=name,capital,region,population,flags,languages,currencies`
     );
 
     if (!response.ok) {
-
         throw new Error("Country not found.");
-
     }
 
     return await response.json();
-
 }
 
 /* ===========================
@@ -25,19 +21,15 @@ export async function searchCountry(country) {
 =========================== */
 
 export async function getAllCountries() {
-
     const response = await fetch(
-        `${BASE_URL}/all`
+        `${BASE_URL}/all?fields=name,capital,region,population,flags,languages,currencies`
     );
 
     if (!response.ok) {
-
         throw new Error("Unable to load countries.");
-
     }
 
     return await response.json();
-
 }
 
 /* ===========================
@@ -45,19 +37,15 @@ export async function getAllCountries() {
 =========================== */
 
 export async function getRegion(region) {
-
     const response = await fetch(
-        `${BASE_URL}/region/${region}`
+        `${BASE_URL}/region/${region}?fields=name,capital,region,population,flags,languages,currencies`
     );
 
     if (!response.ok) {
-
         throw new Error("Unable to load region.");
-
     }
 
     return await response.json();
-
 }
 
 /* ===========================
@@ -65,21 +53,17 @@ export async function getRegion(region) {
 =========================== */
 
 export async function getCountry(country) {
-
     const response = await fetch(
-        `${BASE_URL}/name/${encodeURIComponent(country)}?fullText=true`
+        `${BASE_URL}/name/${encodeURIComponent(country)}?fullText=true&fields=name,capital,region,population,flags,languages,currencies,maps`
     );
 
     if (!response.ok) {
-
         throw new Error("Country not found.");
-
     }
 
     const data = await response.json();
 
     return data[0];
-
 }
 
 /* ===========================
@@ -87,11 +71,9 @@ export async function getCountry(country) {
 =========================== */
 
 export function getFlag(country) {
-
     return country.flags?.svg ||
            country.flags?.png ||
            "";
-
 }
 
 /* ===========================
@@ -99,11 +81,7 @@ export function getFlag(country) {
 =========================== */
 
 export function getCapital(country) {
-
-    return country.capital
-        ? country.capital[0]
-        : "Unknown";
-
+    return country.capital?.[0] || "Unknown";
 }
 
 /* ===========================
@@ -111,15 +89,11 @@ export function getCapital(country) {
 =========================== */
 
 export function getLanguages(country) {
-
     if (!country.languages) {
-
         return "Unknown";
-
     }
 
     return Object.values(country.languages).join(", ");
-
 }
 
 /* ===========================
@@ -127,17 +101,13 @@ export function getLanguages(country) {
 =========================== */
 
 export function getCurrencies(country) {
-
     if (!country.currencies) {
-
         return "Unknown";
-
     }
 
     return Object.values(country.currencies)
         .map(currency => currency.name)
         .join(", ");
-
 }
 
 /* ===========================
@@ -145,8 +115,5 @@ export function getCurrencies(country) {
 =========================== */
 
 export function formatPopulation(population) {
-
-    return new Intl.NumberFormat("en-US")
-        .format(population);
-
+    return new Intl.NumberFormat("en-US").format(population);
 }

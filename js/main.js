@@ -4,6 +4,8 @@ import {
     getRegion
 } from "./api.js";
 
+alert("main.js cargado");
+
 const container = document.querySelector("#destinationsContainer");
 const searchInput = document.querySelector("#searchInput");
 const searchButton = document.querySelector("#searchButton");
@@ -17,21 +19,20 @@ const backToTop = document.querySelector("#backToTop");
 =========================== */
 
 async function loadCountries() {
-
     try {
-
         const countries = await getAllCountries();
+
+        alert("Countries loaded: " + countries.length);
 
         displayCountries(countries);
 
     } catch (error) {
 
-        console.error(error);
+        alert(error.message);
+        console.log(error);
 
     }
-
 }
-
 /* ===========================
    DISPLAY COUNTRIES
 =========================== */
