@@ -1,46 +1,61 @@
-const BASE_URL = "https://restcountries.com/api/v1";
+const BASE_URL = "https://api.restcountries.com/countries/v5";
 
-export async function getAllCountries() {
-    const response = await fetch(`${BASE_URL}/all`);
+const API_KEY = "rc_live_36bd0a5c37794229ad7972ef88a7e751";
+
+async function request(url) {
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${API_KEY}`,
+            Accept: "application/json"
+        }
+    });
+
+    console.log("STATUS:", response.status);
+
+    const text = await response.text();
+
+    console.log("BODY:", text);
 
     if (!response.ok) {
-        throw new Error("Unable to load countries.");
+        throw new Error("Request failed");
     }
 
-    return await response.json();
+    return JSON.parse(text);
+}
+
+export async function getAllCountries() {
+
+    const data = await request(`${BASE_URL}?pretty=1`);
+
+    return data.data;
 }
 
 export async function searchCountry(country) {
-    const response = await fetch(
-        `${BASE_URL}/name/${encodeURIComponent(country)}`
+
+    const data = await request(
+        `${BASE_URL}?q=${encodeURIComponent(country)}&pretty=1`
     );
 
-    if (!response.ok) {
-        throw new Error("Country not found.");
-    }
-
-    return await response.json();
-}
-
-export async function getRegion(region) {
-    const response = await fetch(
-        `${BASE_URL}/region/${region}`
-    );
-
-    if (!response.ok) {
-        throw new Error("Unable to load region.");
-    }
-
-    return await response.json();
+    return data.data;
 }
 
 export async function getCountry(country) {
-    const data = await searchCountry(country);
-    return data[0];
+
+    const countries = await searchCountry(country);
+
+    return countries[0];
+}
+
+export async function getRegion(region) {
+
+    const countries = await getAllCountries();
+
+    return countries.filter(c => c.region === region);
 }
 
 export function getFlag(country) {
-    return country.flags?.svg || country.flags?.png || "";
+    return country.flags?.svg || "";
 }
 
 export function getCapital(country) {
@@ -48,15 +63,17 @@ export function getCapital(country) {
 }
 
 export function getLanguages(country) {
-    if (!country.languages) return "Unknown";
-    return Object.values(country.languages).join(", ");
+    return country.languages
+        ? Object.values(country.languages).join(", ")
+        : "Unknown";
 }
 
 export function getCurrencies(country) {
-    if (!country.currencies) return "Unknown";
-    return Object.values(country.currencies)
-        .map(c => c.name)
-        .join(", ");
+    return country.currencies
+        ? Object.values(country.currencies)
+              .map(c => c.name)
+              .join(", ")
+        : "Unknown";
 }
 
 export function formatPopulation(population) {
