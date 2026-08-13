@@ -1,4 +1,4 @@
-const BASE_URL = "https://api.restcountries.com/countries/v5";
+const BASE_URL = "https://api.restcountries.com/countries/v5" ;
 
 const API_KEY = "rc_live_36bd0a5c37794229ad7972ef88a7e751";
 
