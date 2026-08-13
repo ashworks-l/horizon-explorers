@@ -10,8 +10,6 @@
 
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/responsive.css">
-
-    <script type="module" src="js/main.js" defer></script>
 </head>
 
 
@@ -154,20 +152,49 @@
 
         </section>
 
-        <section class="destinations">
+        <section class="search-section">
 
-            <div class="container">
+    <div class="container">
 
-                <h2 class="section-title">
-                    Popular Destinations
-                </h2>
+        <h2>Find Your Next Destination</h2>
 
-                <div
-                    id="destinationsContainer"
-                    class="destination-grid"
-                >
+        <p>
+            Search for a country and discover more about it.
+        </p>
 
-                </div>
+        <div class="search-box">
+
+            <input
+                type="search"
+                id="countrySearch"
+                placeholder="Enter a country..."
+                aria-label="Search for a country">
+
+            <button
+                id="searchBtn"
+                type="button">
+                Search
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="destinations">
+
+    <div class="container">
+
+        <div
+            id="countryContainer"
+            class="destination-grid"
+            aria-live="polite">
+        </div>
+
+    </div>
+
+</section>
 
             </div>
 
@@ -334,6 +361,9 @@
                 ↑
 
             </button>
-
+        <script
+    type="module"
+    src="js/main.js">
+</script>
     </body>
 </html>

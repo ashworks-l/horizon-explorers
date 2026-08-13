@@ -1,157 +1,85 @@
-/* ===========================================
-   FAVORITES
-=========================================== */
+import {
+    getFavorites,
+    removeFavorite
+} from "./storage.js";
 
-export function getFavorites() {
+const container =
+    document.querySelector("#favoritesContainer");
 
-    return JSON.parse(
-        localStorage.getItem("favorites")
-    ) || [];
+displayFavorites();
 
-}
-
-export function saveFavorites(list) {
-
-    localStorage.setItem(
-        "favorites",
-        JSON.stringify(list)
-    );
-
-}
-
-export function isFavorite(name) {
-
-    return getFavorites().some(
-        country => country.name.common === name
-    );
-
-}
-
-export function addFavorite(country) {
-
+function displayFavorites() {
     const favorites = getFavorites();
 
-    if (!isFavorite(country.name.common)) {
+    if (favorites.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h2>No favorite destinations yet</h2>
+                <p>
+                    Search for a country and save it to your favorites.
+                </p>
 
-        favorites.push(country);
+                <a
+                    href="index.html"
+                    class="primary-button">
+                    Explore Destinations
+                </a>
+            </div>
+        `;
 
-        saveFavorites(favorites);
-
+        return;
     }
 
-}
+    container.innerHTML = favorites
+        .map(
+            (country) => `
+                <article class="favorite-card">
 
-export function removeFavorite(name) {
+                    <h2>${country.country}</h2>
 
-    const favorites = getFavorites().filter(
-        country => country.name.common !== name
-    );
+                    <p>
+                        <strong>Capital:</strong>
+                        ${country.capital || "Not available"}
+                    </p>
 
-    saveFavorites(favorites);
+                    <p>
+                        <strong>Currency:</strong>
+                        ${country.currency || "Not available"}
+                    </p>
 
-}
+                    <div class="favorite-actions">
 
+                        <a
+                            class="details-button"
+                            href="destination.html?country=${encodeURIComponent(country.country)}">
+                            Explore
+                        </a>
 
-/* ===========================================
-   WISHLIST
-=========================================== */
+                        <button
+                            class="remove-button"
+                            data-country="${country.country}">
+                            Remove
+                        </button>
 
-export function getWishlist() {
+                    </div>
 
-    return JSON.parse(
-        localStorage.getItem("wishlist")
-    ) || [];
+                </article>
+            `
+        )
+        .join("");
 
-}
+    document
+        .querySelectorAll(".remove-button")
+        .forEach((button) => {
+            button.addEventListener(
+                "click",
+                () => {
+                    removeFavorite(
+                        button.dataset.country
+                    );
 
-export function saveWishlist(list) {
-
-    localStorage.setItem(
-        "wishlist",
-        JSON.stringify(list)
-    );
-
-}
-
-export function addWishlist(country) {
-
-    const wishlist = getWishlist();
-
-    const exists = wishlist.some(
-        item => item.name.common === country.name.common
-    );
-
-    if (!exists) {
-
-        wishlist.push(country);
-
-        saveWishlist(wishlist);
-
-    }
-
-}
-
-export function removeWishlist(name) {
-
-    const wishlist = getWishlist().filter(
-        country => country.name.common !== name
-    );
-
-    saveWishlist(wishlist);
-
-}
-
-
-/* ===========================================
-   TRIP PLANNER
-=========================================== */
-
-export function getTrips() {
-
-    return JSON.parse(
-        localStorage.getItem("trips")
-    ) || [];
-
-}
-
-export function saveTrips(trips) {
-
-    localStorage.setItem(
-        "trips",
-        JSON.stringify(trips)
-    );
-
-}
-
-export function addTrip(trip) {
-
-    const trips = getTrips();
-
-    trips.push(trip);
-
-    saveTrips(trips);
-
-}
-
-export function deleteTrip(id) {
-
-    const trips = getTrips().filter(
-        trip => trip.id !== id
-    );
-
-    saveTrips(trips);
-
-}
-
-export function updateTrip(updatedTrip) {
-
-    const trips = getTrips().map(trip =>
-
-        trip.id === updatedTrip.id
-            ? updatedTrip
-            : trip
-    );
-
-    saveTrips(trips);
-
+                    displayFavorites();
+                }
+            );
+        });
 }

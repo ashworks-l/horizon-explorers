@@ -1,181 +1,39 @@
-/* ===========================
-   FAVORITES
-=========================== */
+const FAVORITES_KEY = "horizon-explorers-favorites";
 
 export function getFavorites() {
-
     return JSON.parse(
-
-        localStorage.getItem("favorites")
-
+        localStorage.getItem(FAVORITES_KEY)
     ) || [];
-
 }
 
-export function saveFavorites(list) {
-
-    localStorage.setItem(
-
-        "favorites",
-
-        JSON.stringify(list)
-
-    );
-
-}
-
-export function addFavorite(country) {
-
+export function saveFavorite(country) {
     const favorites = getFavorites();
 
-    const exists = favorites.some(
-        item => item.name.common === country.name.common
+    const alreadySaved = favorites.some(
+        (favorite) =>
+            favorite.country === country.country
     );
 
-    if (!exists) {
-
+    if (!alreadySaved) {
         favorites.push(country);
 
-        saveFavorites(favorites);
-
+        localStorage.setItem(
+            FAVORITES_KEY,
+            JSON.stringify(favorites)
+        );
     }
-
 }
-export function removeFavorite(name) {
 
-    let favorites = getFavorites();
+export function removeFavorite(countryName) {
+    const favorites = getFavorites();
 
-    favorites = favorites.filter(
-
-        country => country.name.common !== name
-
+    const updatedFavorites = favorites.filter(
+        (favorite) =>
+            favorite.country !== countryName
     );
-
-    saveFavorites(favorites);
-
-}
-
-/* ===========================
-   WISHLIST
-=========================== */
-
-export function getWishlist() {
-
-    return JSON.parse(
-
-        localStorage.getItem("wishlist")
-
-    ) || [];
-
-}
-
-export function saveWishlist(list) {
 
     localStorage.setItem(
-
-        "wishlist",
-
-        JSON.stringify(list)
-
+        FAVORITES_KEY,
+        JSON.stringify(updatedFavorites)
     );
-
-}
-
-export function addWishlist(country) {
-
-    const wishlist = getWishlist();
-
-    wishlist.push(country);
-
-    saveWishlist(wishlist);
-
-}
-
-export function removeWishlist(name) {
-
-    let wishlist = getWishlist();
-
-    wishlist = wishlist.filter(
-
-        country => country.name.common !== name
-
-    );
-
-    saveWishlist(wishlist);
-
-}
-
-/* ===========================
-   TRIP PLANNER
-=========================== */
-
-export function getTrips() {
-
-    return JSON.parse(
-
-        localStorage.getItem("trips")
-
-    ) || [];
-
-}
-
-export function saveTrips(trips) {
-
-    localStorage.setItem(
-
-        "trips",
-
-        JSON.stringify(trips)
-
-    );
-
-}
-/* ===========================
-   FAVORITES
-=========================== */
-
-export function isFavorite(name) {
-
-    return getFavorites().some(
-        country => country.name.common === name
-    );
-
-}
-
-/* ===========================
-   TRIPS
-=========================== */
-
-export function addTrip(trip) {
-
-    const trips = getTrips();
-
-    trips.push(trip);
-
-    saveTrips(trips);
-
-}
-
-export function deleteTrip(id) {
-
-    const trips = getTrips().filter(
-        trip => trip.id !== id
-    );
-
-    saveTrips(trips);
-
-}
-
-export function updateTrip(updatedTrip) {
-
-    const trips = getTrips().map(trip =>
-
-        trip.id === updatedTrip.id
-            ? updatedTrip
-            : trip
-
-    );
-
-    saveTrips(trips);
-
 }

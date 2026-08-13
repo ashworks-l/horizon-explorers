@@ -1,81 +1,47 @@
-const BASE_URL = "https://api.restcountries.com/countries/v5" ;
-
-const API_KEY = "rc_live_36bd0a5c37794229ad7972ef88a7e751";
+const COUNTRIES_API =
+    "https://countriesnow.space/api/v0.1/countries";
 
 async function request(url) {
+    const response = await fetch(url);
 
-    const response = await fetch(url, {
-        headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            Accept: "application/json"
-        }
-    });
-
-    console.log("STATUS:", response.status);
-
-    const text = await response.text();
-
-    console.log("BODY:", text);
+    console.log("API STATUS:", response.status);
 
     if (!response.ok) {
-        throw new Error("Request failed");
+        throw new Error(`API error: ${response.status}`);
     }
 
-    return JSON.parse(text);
+    const data = await response.json();
+
+    console.log("API DATA:", data);
+
+    return data;
 }
 
 export async function getAllCountries() {
+    const data = await request(COUNTRIES_API);
 
-    const data = await request(`${BASE_URL}?pretty=1`);
-
-    return data.data;
+    return data.data || [];
 }
 
-export async function searchCountry(country) {
-
-    const data = await request(
-        `${BASE_URL}?q=${encodeURIComponent(country)}&pretty=1`
-    );
-
-    return data.data;
-}
-
-export async function getCountry(country) {
-
-    const countries = await searchCountry(country);
-
-    return countries[0];
-}
-
-export async function getRegion(region) {
-
+export async function searchCountry(countryName) {
     const countries = await getAllCountries();
 
-    return countries.filter(c => c.region === region);
+    const search = countryName.toLowerCase().trim();
+
+    return countries.filter((country) =>
+        country.country.toLowerCase().includes(search)
+    );
 }
 
-export function getFlag(country) {
-    return country.flags?.svg || "";
+export async function getCountry(countryName) {
+    const countries = await searchCountry(countryName);
+
+    return countries[0] || null;
 }
 
-export function getCapital(country) {
-    return country.capital?.[0] || "Unknown";
-}
+export async function getWikipedia(countryName) {
+    const url =
+        `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(countryName)}&limit=1`;
 
-export function getLanguages(country) {
-    return country.languages
-        ? Object.values(country.languages).join(", ")
-        : "Unknown";
-}
-
-export function getCurrencies(country) {
-    return country.currencies
-        ? Object.values(country.currencies)
-              .map(c => c.name)
-              .join(", ")
-        : "Unknown";
-}
-
-export function formatPopulation(population) {
-    return new Intl.NumberFormat("en-US").format(population);
+    return request(url);
 }

@@ -1,231 +1,179 @@
+import { getCountry } from "./api.js";
 import {
-    getAllCountries,
-    searchCountry,
-    getRegion
-} from "./api.js";
+    saveFavorite,
+    addToWishlist
+} from "./storage.js";
 
-alert("main.js cargado");
+const searchInput =
+    document.querySelector("#countrySearch");
 
-const container = document.querySelector("#destinationsContainer");
-const searchInput = document.querySelector("#searchInput");
-const searchButton = document.querySelector("#searchButton");
-const filterButtons = document.querySelectorAll(".filter-btn");
-const menuButton = document.querySelector("#menuButton");
-const navbar = document.querySelector(".navbar");
-const backToTop = document.querySelector("#backToTop");
+const searchButton =
+    document.querySelector("#searchBtn");
 
-/* ===========================
-   LOAD COUNTRIES
-=========================== */
+const countryContainer =
+    document.querySelector("#countryContainer");
 
-async function loadCountries() {
+if (searchButton) {
+    searchButton.addEventListener(
+        "click",
+        searchCountry
+    );
+}
+
+if (searchInput) {
+    searchInput.addEventListener(
+        "keydown",
+        (event) => {
+            if (event.key === "Enter") {
+                searchCountry();
+            }
+        }
+    );
+}
+
+async function searchCountry() {
+
+    const searchValue =
+        searchInput.value.trim();
+
+    if (!searchValue) {
+
+        countryContainer.innerHTML = `
+            <p class="message">
+                Please enter a country name.
+            </p>
+        `;
+
+        return;
+    }
+
+    countryContainer.innerHTML = `
+        <p class="loading">
+            Searching for ${searchValue}...
+        </p>
+    `;
+
     try {
-        const countries = await getAllCountries();
 
-        alert("Countries loaded: " + countries.length);
+        console.log(
+            "Searching for:",
+            searchValue
+        );
 
-        displayCountries(countries);
+        const country =
+            await getCountry(searchValue);
+
+        console.log(
+            "Country received:",
+            country
+        );
+
+        if (!country) {
+
+            countryContainer.innerHTML = `
+                <p class="message">
+                    Country not found.
+                </p>
+            `;
+
+            return;
+        }
+
+        displayCountry(country);
 
     } catch (error) {
 
-        alert(error.message);
-        console.log(error);
+        console.error(
+            "Search error:",
+            error
+        );
 
+        countryContainer.innerHTML = `
+            <p class="message">
+                Unable to load country information.
+                Please try again.
+            </p>
+        `;
     }
 }
-/* ===========================
-   DISPLAY COUNTRIES
-=========================== */
 
-function displayCountries(countries) {
+function displayCountry(country) {
 
-    container.innerHTML = "";
+    countryContainer.innerHTML = `
+        <article class="destination-card">
 
-    countries
-        .sort((a, b) =>
-            a.name.common.localeCompare(b.name.common)
-        )
-        .forEach(country => {
+            <div class="card-content">
 
-            const card = document.createElement("article");
+                <h3>
+                    ${country.country}
+                </h3>
 
-            card.className = "destination-card";
+                <p>
+                    <strong>Capital:</strong>
+                    ${country.capital || "Not available"}
+                </p>
 
-            card.innerHTML = `
+                <p>
+                    <strong>Currency:</strong>
+                    ${country.currency || "Not available"}
+                </p>
 
-                <img
-                    src="${country.flags.svg}"
-                    alt="${country.name.common} flag">
+                <div class="card-buttons">
 
-                <div class="card-content">
-
-                    <h3>${country.name.common}</h3>
-
-                    <p><strong>Capital:</strong>
-                    ${country.capital ? country.capital[0] : "N/A"}</p>
-
-                    <p><strong>Region:</strong>
-                    ${country.region}</p>
+                    <a
+                        href="destination.html?country=${encodeURIComponent(country.country)}"
+                        class="details-btn">
+                        Explore
+                    </a>
 
                     <button
-                        class="details-btn"
-                        data-country="${country.name.common}">
+                        class="favorite-btn"
+                        id="favoriteSearchButton"
+                        type="button"
+                        aria-label="Save to favorites">
+                        ❤️
+                    </button>
 
-                        View Details
-
+                    <button
+                        class="favorite-btn"
+                        id="wishlistSearchButton"
+                        type="button"
+                        aria-label="Add to wishlist">
+                        ⭐
                     </button>
 
                 </div>
 
-            `;
+            </div>
 
-            container.appendChild(card);
+        </article>
+    `;
 
-        });
+    document
+        .querySelector("#favoriteSearchButton")
+        .addEventListener(
+            "click",
+            () => {
 
-    addDetailsEvents();
+                saveFavorite(country);
 
-}
-
-/* ===========================
-   DETAILS BUTTON
-=========================== */
-
-function addDetailsEvents() {
-
-    const buttons = document.querySelectorAll(".details-btn");
-
-    buttons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const country = button.dataset.country;
-
-            window.location.href =
-                `destination.html?country=${encodeURIComponent(country)}`;
-
-        });
-
-    });
-
-}
-
-/* ===========================
-   SEARCH
-=========================== */
-
-searchButton.addEventListener("click", async () => {
-
-    const value = searchInput.value.trim();
-
-    if (!value) {
-
-        loadCountries();
-
-        return;
-
-    }
-
-    try {
-
-        const countries = await searchCountry(value);
-
-        displayCountries(countries);
-
-    } catch {
-
-        container.innerHTML =
-
-        "<h2>Country not found.</h2>";
-
-    }
-
-});
-
-/* ===========================
-   FILTERS
-=========================== */
-
-filterButtons.forEach(button => {
-
-    button.addEventListener("click", async () => {
-
-        filterButtons.forEach(btn =>
-            btn.classList.remove("active")
+                document.querySelector(
+                    "#favoriteSearchButton"
+                ).textContent = "✓";
+            }
         );
 
-        button.classList.add("active");
+    document
+        .querySelector("#wishlistSearchButton")
+        .addEventListener(
+            "click",
+            () => {
 
-        const region = button.dataset.region;
+                addToWishlist(country);
 
-        if (region === "all") {
-
-            loadCountries();
-
-            return;
-
-        }
-
-        const countries = await getRegion(region);
-
-        displayCountries(countries);
-
-    });
-
-});
-
-/* ===========================
-   MOBILE MENU
-=========================== */
-
-if (menuButton) {
-
-    menuButton.addEventListener("click", () => {
-
-        navbar.classList.toggle("active");
-
-    });
-
+                document.querySelector(
+                    "#wishlistSearchButton"
+                ).textContent = "✓";
+            }
+        );
 }
-
-/* ===========================
-   BACK TO TOP
-=========================== */
-
-if (backToTop) {
-
-    backToTop.style.display = "none";
-
-    window.addEventListener("scroll", () => {
-
-        if (window.scrollY > 300) {
-
-            backToTop.style.display = "flex";
-
-        } else {
-
-            backToTop.style.display = "none";
-
-        }
-
-    });
-
-    backToTop.addEventListener("click", () => {
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    });
-
-}
-
-/* ===========================
-   START
-=========================== */
-
-loadCountries();

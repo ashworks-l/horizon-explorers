@@ -1,254 +1,98 @@
 import {
     getWishlist,
-    removeWishlist
+    removeFromWishlist
 } from "./storage.js";
 
-import {
-    getFlag,
-    getCapital
-} from "./api.js";
-
-/* ===============================
-   ELEMENTS
-=============================== */
-
-const wishlistContainer =
+const container =
     document.querySelector("#wishlistContainer");
 
-const emptyWishlist =
-    document.querySelector("#emptyWishlist");
+displayWishlist();
 
-let wishlist = [];
+function displayWishlist() {
 
-/* ===============================
-   INITIALIZE
-=============================== */
-
-function initialize() {
-
-    wishlist = getWishlist();
-
-    renderWishlist();
-
-}
-
-initialize();
-
-/* ===============================
-   RENDER WISHLIST
-=============================== */
-
-function renderWishlist() {
-
-    if (!wishlistContainer || !emptyWishlist) return;
-
-    wishlistContainer.innerHTML = "";
+    const wishlist = getWishlist();
 
     if (wishlist.length === 0) {
 
-        wishlistContainer.classList.add("hidden");
-        emptyWishlist.classList.remove("hidden");
+        container.innerHTML = `
+            <div class="empty-state">
 
-        return;
+                <h2>
+                    Your wishlist is empty
+                </h2>
 
-    }
+                <p>
+                    Search for a destination and add it
+                    to your wishlist.
+                </p>
 
-    wishlistContainer.classList.remove("hidden");
-    emptyWishlist.classList.add("hidden");
-
-    wishlist.forEach(country => {
-
-        wishlistContainer.appendChild(
-            createCard(country)
-        );
-
-    });
-
-}
-
-/* ===============================
-   CREATE CARD
-=============================== */
-
-function createCard(country) {
-
-    const card =
-        document.createElement("article");
-
-    card.className =
-        "destination-card";
-
-    card.innerHTML = `
-
-        <img
-            src="${getFlag(country)}"
-            alt="${country.name.common}">
-
-        <div class="card-content">
-
-            <h3>
-
-                ${country.name.common}
-
-            </h3>
-
-            <p>
-
-                <strong>Capital:</strong>
-
-                ${getCapital(country)}
-
-            </p>
-
-            <p>
-
-                <strong>Region:</strong>
-
-                ${country.region}
-
-            </p>
-
-            <div class="card-buttons">
-
-                <button
-                    class="details-btn"
-                    data-country="${country.name.common}">
-
-                    View Details
-
-                </button>
-
-                <button
-                    class="favorite-btn"
-                    data-country="${country.name.common}">
-
-                    🗑️
-
-                </button>
+                <a
+                    href="index.html"
+                    class="primary-button">
+                    Explore Destinations
+                </a>
 
             </div>
+        `;
 
-        </div>
-
-    `;
-
-    return card;
-
-}
-
-/* ===============================
-   EVENTS
-=============================== */
-
-if (wishlistContainer) {
-
-    wishlistContainer.addEventListener("click", (event) => {
-
-        const detailsButton =
-            event.target.closest(".details-btn");
-
-        const deleteButton =
-            event.target.closest(".favorite-btn");
-
-        if (detailsButton) {
-
-            const country =
-                detailsButton.dataset.country;
-
-            window.location.href =
-                `destination.html?country=${encodeURIComponent(country)}`;
-
-        }
-
-        if (deleteButton) {
-
-            const country =
-                deleteButton.dataset.country;
-
-            removeWishlist(country);
-
-            wishlist = getWishlist();
-
-            renderWishlist();
-
-        }
-
-    });
-
-}
-
-/* ===============================
-   MOBILE MENU
-=============================== */
-
-const menuButton =
-    document.querySelector("#menuButton");
-
-const navbar =
-    document.querySelector(".navbar");
-
-if (menuButton && navbar) {
-
-    menuButton.addEventListener("click", () => {
-
-        navbar.classList.toggle("active");
-
-    });
-
-}
-
-/* ===============================
-   BACK TO TOP
-=============================== */
-
-const backToTop =
-    document.querySelector("#backToTop");
-
-if (backToTop) {
-
-    backToTop.style.display = "none";
-
-    window.addEventListener("scroll", () => {
-
-        backToTop.style.display =
-            window.scrollY > 300
-                ? "flex"
-                : "none";
-
-    });
-
-    backToTop.addEventListener("click", () => {
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    });
-
-}
-
-/* ===============================
-   ESC KEY
-=============================== */
-
-document.addEventListener("keydown", (event) => {
-
-    if (event.key === "Escape") {
-
-        window.location.href =
-            "index.html";
-
+        return;
     }
 
-});
+    container.innerHTML = wishlist
+        .map(
+            (country) => `
+                <article class="favorite-card">
 
-/* ===============================
-   PAGE TITLE
-=============================== */
+                    <h2>
+                        ${country.country}
+                    </h2>
 
-document.title =
-    "Travel Wishlist | Horizon Explorers";
+                    <p>
+                        <strong>Capital:</strong>
+                        ${country.capital || "Not available"}
+                    </p>
+
+                    <p>
+                        <strong>Currency:</strong>
+                        ${country.currency || "Not available"}
+                    </p>
+
+                    <div class="favorite-actions">
+
+                        <a
+                            class="details-button"
+                            href="destination.html?country=${encodeURIComponent(country.country)}">
+                            Explore
+                        </a>
+
+                        <button
+                            class="remove-button"
+                            data-country="${country.country}">
+                            Remove
+                        </button>
+
+                    </div>
+
+                </article>
+            `
+        )
+        .join("");
+
+    document
+        .querySelectorAll(".remove-button")
+        .forEach((button) => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    removeFromWishlist(
+                        button.dataset.country
+                    );
+
+                    displayWishlist();
+                }
+            );
+
+        });
+}

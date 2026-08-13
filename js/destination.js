@@ -1,313 +1,137 @@
 import {
     getCountry,
-    getFlag,
-    getCapital,
-    getLanguages,
-    getCurrencies,
-    formatPopulation
+    getWikipedia,
+    getWikipediaPage
 } from "./api.js";
 
-import {
-    addFavorite,
-    isFavorite,
-    addTrip
-} from "./storage.js";
+const params = new URLSearchParams(
+    window.location.search
+);
 
-/* ===============================
-   ELEMENTS
-=============================== */
-
-const destinationContainer = document.querySelector("#destinationContainer");
-const favoriteButton = document.querySelector("#favoriteButton");
-const plannerButton = document.querySelector("#plannerButton");
-const countryMap = document.querySelector("#countryMap");
-
-/* ===============================
-   URL PARAMETERS
-=============================== */
-
-const params = new URLSearchParams(window.location.search);
 const countryName = params.get("country");
-console.log("Country:", countryName);
 
-let currentCountry = null;
+const destinationContainer =
+    document.querySelector("#destinationInfo");
 
-/* ===============================
-   INITIALIZE
-=============================== */
+loadDestination();
 
-async function initialize() {
-
+async function loadDestination() {
     if (!countryName) {
-
         destinationContainer.innerHTML = `
-            <h2 class="text-center">
-                Country not found.
-            </h2>
+            <p class="message">
+                No destination was selected.
+            </p>
         `;
-
         return;
     }
-
-    currentCountry = await getCountry(countryName);
-
-    if (!currentCountry) {
-
-        destinationContainer.innerHTML = `
-            <h2 class="text-center">
-                Country not available.
-            </h2>
-        `;
-
-        return;
-    }
-
-    document.title =
-        `${currentCountry.name.common} | Horizon Explorers`;
-
-    renderCountry(currentCountry);
-
-    updateFavoriteButton();
-
-    loadMap();
-
-}
-
-initialize();
-
-/* ===============================
-   FAVORITES
-=============================== */
-
-function updateFavoriteButton() {
-
-    if (!favoriteButton) return;
-
-    if (isFavorite(currentCountry.name.common)) {
-
-        favoriteButton.textContent =
-            "❤️ Already in Favorites";
-
-    } else {
-
-        favoriteButton.textContent =
-            "🤍 Add to Favorites";
-
-    }
-
-}
-
-if (favoriteButton) {
-
-    favoriteButton.addEventListener("click", () => {
-
-        if (!isFavorite(currentCountry.name.common)) {
-
-            addFavorite(currentCountry);
-
-            alert(
-                `${currentCountry.name.common} added to Favorites.`
-            );
-
-        } else {
-
-            alert(
-                `${currentCountry.name.common} is already in Favorites.`
-            );
-
-        }
-
-        updateFavoriteButton();
-
-    });
-
-}
-
-/* ===============================
-   TRIP PLANNER
-=============================== */
-
-if (plannerButton) {
-
-    plannerButton.addEventListener("click", () => {
-
-        const trip = {
-
-            id: Date.now(),
-
-            country: currentCountry.name.common,
-
-            capital: getCapital(currentCountry),
-
-            region: currentCountry.region,
-
-            date: "",
-
-            status: "Planned"
-
-        };
-
-        addTrip(trip);
-
-        alert(
-            `${currentCountry.name.common} added to Trip Planner.`
-        );
-
-    });
-
-}
-
-/* ===============================
-   RENDER COUNTRY
-=============================== */
-
-function renderCountry(country) {
-
-    const languages = getLanguages(country);
-
-    const currencies = getCurrencies(country);
-
-    const population = formatPopulation(country.population);
-
-    const area = country.area
-        ? new Intl.NumberFormat("en-US").format(country.area)
-        : "Unknown";
-
-    const subregion = country.subregion || "Unknown";
-
-    const continent = country.region || "Unknown";
-
-    const timezones = country.timezones
-        ? country.timezones.join(", ")
-        : "Unknown";
-
-    const domain = country.tld
-        ? country.tld.join(", ")
-        : "Unknown";
 
     destinationContainer.innerHTML = `
+        <p class="message">
+            Loading destination information...
+        </p>
+    `;
 
-        <div class="country-details">
+    try {
+        const country = await getCountry(countryName);
+        const wikipediaResult =
+            await getWikipedia(countryName);
 
-            <div class="country-image">
+        let wikipediaPage = null;
 
-                <img
-                    src="${getFlag(country)}"
-                    alt="${country.name.common}">
+        if (wikipediaResult?.key) {
+            wikipediaPage =
+                await getWikipediaPage(
+                    wikipediaResult.key
+                );
+        }
+
+        displayDestination(
+            country,
+            wikipediaResult,
+            wikipediaPage
+        );
+
+    } catch (error) {
+        console.error(error);
+
+        destinationContainer.innerHTML = `
+            <p class="message">
+                Unable to load destination information.
+            </p>
+        `;
+    }
+}
+
+function displayDestination(
+    country,
+    wikipediaResult,
+    wikipediaPage
+) {
+    const title =
+        wikipediaResult?.title ||
+        country?.country ||
+        countryName;
+
+    const description =
+        wikipediaResult?.description ||
+        "Explore this destination and learn more about its culture and history.";
+
+    const wikipediaLink =
+        wikipediaPage?.html_url ||
+        `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`;
+
+    destinationContainer.innerHTML = `
+        <article class="destination-card">
+
+            <div class="destination-header">
+
+                <span class="destination-label">
+                    HORIZON EXPLORERS
+                </span>
+
+                <h2>
+                    ${country?.country || title}
+                </h2>
+
+                <p>
+                    ${description}
+                </p>
 
             </div>
 
-            <div class="country-information">
+            <div class="destination-details">
 
-                <h2>${country.name.common}</h2>
+                <div class="detail-box">
+                    <h3>Capital</h3>
+                    <p>
+                        ${country?.capital || "Information unavailable"}
+                    </p>
+                </div>
 
-                <div class="info-grid">
+                <div class="detail-box">
+                    <h3>Currency</h3>
+                    <p>
+                        ${country?.currency || "Information unavailable"}
+                    </p>
+                </div>
 
-                    <p><strong>Capital:</strong> ${getCapital(country)}</p>
-
-                    <p><strong>Region:</strong> ${continent}</p>
-
-                    <p><strong>Subregion:</strong> ${subregion}</p>
-
-                    <p><strong>Population:</strong> ${population}</p>
-
-                    <p><strong>Area:</strong> ${area} km²</p>
-
-                    <p><strong>Languages:</strong> ${languages}</p>
-
-                    <p><strong>Currencies:</strong> ${currencies}</p>
-
-                    <p><strong>Time Zones:</strong> ${timezones}</p>
-
-                    <p><strong>Internet Domain:</strong> ${domain}</p>
-
+                <div class="detail-box">
+                    <h3>Destination</h3>
+                    <p>
+                        ${title}
+                    </p>
                 </div>
 
             </div>
 
-        </div>
+            <a
+                class="primary-button"
+                href="${wikipediaLink}"
+                target="_blank"
+                rel="noopener noreferrer">
+                Learn More
+            </a>
 
+        </article>
     `;
-
 }
-
-/* ===============================
-   GOOGLE MAP
-=============================== */
-
-function loadMap() {
-
-    if (!countryMap) return;
-
-    if (!currentCountry.latlng) return;
-
-    const latitude = currentCountry.latlng[0];
-
-    const longitude = currentCountry.latlng[1];
-
-    countryMap.src =
-        `https://maps.google.com/maps?q=${latitude},${longitude}&z=5&output=embed`;
-
-}
-
-/* ===============================
-   MOBILE MENU
-=============================== */
-
-const menuButton = document.querySelector("#menuButton");
-const navbar = document.querySelector(".navbar");
-
-if (menuButton && navbar) {
-
-    menuButton.addEventListener("click", () => {
-
-        navbar.classList.toggle("active");
-
-    });
-
-}
-
-/* ===============================
-   BACK TO TOP
-=============================== */
-
-const backToTop = document.querySelector("#backToTop");
-
-if (backToTop) {
-
-    backToTop.style.display = "none";
-
-    window.addEventListener("scroll", () => {
-
-        backToTop.style.display =
-            window.scrollY > 300 ? "flex" : "none";
-
-    });
-
-    backToTop.addEventListener("click", () => {
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    });
-
-}
-
-/* ===============================
-   ESC KEY
-=============================== */
-
-document.addEventListener("keydown", (event) => {
-
-    if (event.key === "Escape") {
-
-        window.location.href = "index.html";
-
-    }
-
-});
